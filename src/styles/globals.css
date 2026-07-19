@@ -38,20 +38,65 @@ code {
 }
 
 /* Animasi */
-@keyframes zoomInOut {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.9;
-  }
-  50% {
-    transform: scale(1.15);
-    opacity: 1;
-  }
-}
+ @keyframes zoomInOut {
+   0%, 100% {
+     transform: scale(1);
+     opacity: 0.9;
+   }
+   50% {
+     transform: scale(1.15);
+     opacity: 1;
+   }
+ }
 
-.animate-zoom {
-  animation: zoomInOut 1.5s ease-in-out infinite;
-}
+ .animate-zoom {
+   animation: zoomInOut 1.5s ease-in-out infinite;
+ }
+
+ @keyframes slideInFromLeft {
+   0% {
+     opacity: 0;
+     transform: translateX(-100px);
+   }
+   100% {
+     opacity: 1;
+     transform: translateX(0);
+   }
+ }
+
+ @keyframes slideInFromRight {
+   0% {
+     opacity: 0;
+     transform: translateX(100px);
+   }
+   100% {
+     opacity: 1;
+     transform: translateX(0);
+   }
+ }
+
+ .animate-slide-in-left {
+   animation: slideInFromLeft 0.8s ease-out forwards;
+ }
+
+ .animate-slide-in-right {
+   animation: slideInFromRight 0.8s ease-out forwards;
+ }
+
+ @keyframes fadeInUp {
+   0% {
+     opacity: 0;
+     transform: translateY(30px);
+   }
+   100% {
+     opacity: 1;
+     transform: translateY(0);
+   }
+ }
+
+ .animate-fade-in-up {
+   animation: fadeInUp 0.6s ease-out forwards;
+ }
 
 /* ========================= */
 /* KHUSUS HALAMAN LAPORAN */
@@ -249,3 +294,228 @@ code {
   }
 }
 
+.a4-page{
+    width:210mm;
+    min-height:297mm;
+    margin:auto;
+    background:white;
+}
+
+.border-dotted{
+    border-bottom:1px dotted #000;
+}
+
+@media print{
+
+.no-print{
+    display:none !important;
+}
+
+body{
+    background:white;
+}
+
+.a4-page{
+    width:100%;
+    margin:0;
+    padding:0;
+    box-shadow:none;
+}
+
+}
+
+/* ========================= */
+/* KHUSUS HALAMAN KWITANSI */
+/* ========================= */
+
+.kwitansi-wrapper {
+  background: #525659;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px;
+}
+
+.kwitansi-page {
+  width: 170mm;
+  min-height: 110mm;
+  max-height: 110mm;
+  background: white;
+  margin: 0 auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+}
+
+.kwitansi-inner {
+  padding: 5mm 10mm;
+  font-family: "Times New Roman", Times, serif;
+  color: #000;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 110mm;
+}
+
+.kwitansi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 3px double #000;
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+
+.kwitansi-title {
+  text-align: left;
+  line-height: 1.2;
+}
+
+.kwitansi-title h1 {
+  font-size: 16pt;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.kwitansi-title p {
+  font-size: 10pt;
+  font-weight: bold;
+  margin: 1px 0 0;
+}
+
+.kwitansi-title span {
+  font-size: 8pt;
+  font-style: italic;
+}
+
+.kwitansi-no table {
+  font-size: 9pt;
+  border-collapse: collapse;
+}
+
+.kwitansi-no td {
+  padding: 1px 2px;
+  vertical-align: top;
+}
+
+.kwitansi-body {
+  margin-bottom: 6px;
+  flex: 1 1 auto;
+}
+
+.kwitansi-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10pt;
+}
+
+.kwitansi-table td {
+  padding: 3px 4px;
+  vertical-align: top;
+  border-bottom: 0.5px solid #999;
+}
+
+.kwitansi-table .label {
+  width: 22%;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.kwitansi-table .colon {
+  width: 12px;
+}
+
+.kwitansi-table .value {
+  width: auto;
+}
+
+.kwitansi-table .terbilang {
+  font-style: italic;
+  text-transform: capitalize;
+}
+
+.kwitansi-amount {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 2px solid #000;
+  padding: 4px 12px;
+  margin-bottom: 6px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.kwitansi-amount .amount-label {
+  font-size: 11pt;
+  letter-spacing: 2px;
+}
+
+.kwitansi-amount .amount-value {
+  font-size: 15pt;
+}
+
+.kwitansi-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.kwitansi-note {
+  font-size: 8pt;
+  max-width: 55%;
+  line-height: 1.3;
+}
+
+.kwitansi-note p {
+  margin: 0;
+}
+
+.kwitansi-sign {
+  text-align: center;
+  font-size: 10pt;
+  width: 180px;
+}
+
+.kwitansi-sign .sign-space {
+  margin-top: 22px;
+}
+
+.kwitansi-sign .sign-name {
+  margin-top: 4px;
+}
+
+@media screen and (max-width: 768px) {
+  .kwitansi-wrapper {
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: 12px;
+  }
+
+  .kwitansi-page {
+    min-width: 170mm;
+  }
+}
+
+@media print {
+  .kwitansi-wrapper {
+    background: white !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .kwitansi-page {
+    width: 170mm !important;
+    min-height: 110mm !important;
+    max-height: 110mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+
+  @page {
+    size: 170mm 110mm;
+    margin: 0;
+  }
+}

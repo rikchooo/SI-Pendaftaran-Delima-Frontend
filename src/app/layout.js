@@ -15,7 +15,7 @@ export default function RootLayout({ children }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -23,9 +23,7 @@ export default function RootLayout({ children }) {
   // Cek halaman otentikasi
   const isAuthPage =
     pathname === '/PublicWeb/login' ||
-    pathname === '/PublicWeb/login/loginEmail' ||
-    pathname === '/PublicWeb/register' ||
-    pathname === '/PublicWeb/register/registerEmail';
+    pathname === '/PublicWeb/register' ;
 
   // Cek halaman pendaftaran
   const isRegistrationPage =

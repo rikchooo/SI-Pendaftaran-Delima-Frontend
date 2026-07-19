@@ -126,7 +126,7 @@ const handleSubmit = async (e) => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || 'Gagal menyimpan nilai');
+      throw new Error(errorData.error || errorData.message || 'Gagal menyimpan nilai');
     }
 
     const result = await response.json();

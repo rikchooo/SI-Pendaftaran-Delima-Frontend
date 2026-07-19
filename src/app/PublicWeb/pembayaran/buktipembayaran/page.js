@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
 import "@/styles/globals.css";
-
 export default function LaporanPage() {
   // State untuk data pembayaran, error, dan router
   const [pembayaran, setPembayaran] = useState(null);
@@ -12,15 +10,6 @@ export default function LaporanPage() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  // Data kop surat
-  const kopSurat = {
-    nama: "PONDOK PESANTREN DELIMA TJR CANGKRENG",
-    arab: "المعْهد الدّيْنى دليْما تنْجُنا رَجاء",
-    yayasan: "YAYASAN DELIMA TANJUNG REJO",
-    sk: "Nomor SK. KEMENKUMHAM : AHU-0008815.AH.01.04.Tahun 2023",
-    alamat: "Sekretariat : Jl. Cangkreng, Dusun Utara Pasar – Desa Mangaran – Kec. Mangaran – Situbondo (68363)",
-  };
 
   // Fetch data pembayaran berdasarkan id_pendaftaran
   useEffect(() => {
@@ -70,29 +59,91 @@ export default function LaporanPage() {
     }
   };
 
-  // TAMBAHKAN FUNCTION INI DI DALAM COMPONENT
-// letakkan di atas: if (error) { ... }
-
   const formatTanggal = (tanggal) => {
     if (!tanggal) return "-";
 
     try {
-      return new Date(tanggal).toLocaleDateString(
-        "id-ID",
-        {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }
-      );
+      return new Date(tanggal).toLocaleDateString("id-ID", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
     } catch {
       return tanggal;
     }
   };
 
+  const formatRupiah = (angka) => {
+    const nominal = Number(angka) || 0;
+    const utuh = Math.floor(nominal).toLocaleString("id-ID");
+    const desimal = (nominal % 1).toFixed(2).slice(2);
+    return `Rp ${utuh},${desimal}`;
+  };
+
+  const getStatusLabel = (status) => {
+    if (!status) return "Belum Bayar";
+    switch (status) {
+      case "submitted":
+        return "Menunggu Konfirmasi";
+      case "confirmed":
+      case "lunas":
+      case "success":
+        return "Lunas / Dikonfirmasi";
+      case "rejected":
+      case "cancelled":
+        return "Ditolak";
+      default:
+        return status;
+    }
+  };
+
+  const nominal = 500000;
+  const terbilang = (() => {
+    const bilangan = [
+      "",
+      "Satu",
+      "Dua",
+      "Tiga",
+      "Empat",
+      "Lima",
+      "Enam",
+      "Tujuh",
+      "Delapan",
+      "Sembilan",
+      "Sepuluh",
+      "Sebelas",
+    ];
+    const penggalan = (n) => {
+      if (n < 12) return bilangan[n];
+      if (n < 20) return penggalan(n - 10) + " Belas";
+      if (n < 100)
+        return (
+          penggalan(Math.floor(n / 10)) + " Puluh " + bilangan[n % 10]
+        ).trim();
+      if (n < 200) return ("Seratus " + penggalan(n - 100)).trim();
+      if (n < 1000)
+        return (
+          penggalan(Math.floor(n / 100)) + " Ratus " + penggalan(n % 100)
+        ).trim();
+      if (n < 2000) return ("Seribu " + penggalan(n - 1000)).trim();
+      if (n < 1000000)
+        return (
+          penggalan(Math.floor(n / 1000)) + " Ribu " + penggalan(n % 1000)
+        ).trim();
+      if (n < 1000000000)
+        return (
+          penggalan(Math.floor(n / 1000000)) +
+          " Juta " +
+          penggalan(n % 1000000)
+        ).trim();
+      return "";
+    };
+    return (penggalan(nominal) + " Rupiah").replace(/\s+/g, " ").trim();
+  })();
+
   return (
-    <div className="report-page-wrapper">
+    <div className="kwitansi-wrapper">
       <div className="no-print fixed top-6 right-6 z-50 flex flex-col gap-3">
         <button
           onClick={handleBack}
@@ -114,96 +165,86 @@ export default function LaporanPage() {
         </button>
       </div>
 
-      <div className="a4-page">
-        <div className="kop-surat-wrapper relative">
-          <div className="logo-container absolute -left-12 -top-4 w-36 h-36 z-0">
-            <Image
-              src="/images/IllustratorLoading.png"
-              alt="logo"
-              fill
-              className="object-contain"
-            />
+      <div className="kwitansi-page">
+        <div className="kwitansi-inner">
+          <div className="kwitansi-header">
+            <div className="kwitansi-title">
+              <h1>KWITANSI PEMBAYARAN</h1>
+              <p>PONDOK PESANTREN DELIMA TJR CANGKRENG</p>
+              <span>YAYASAN DELIMA TANJUNG REJO</span>
+            </div>
+            <div className="kwitansi-no">
+              <table>
+                <tbody>
+                  <tr>
+                    <td>No. Kwitansi</td>
+                    <td>: {pembayaran.no_kwitansi || "KW-" + (searchParams.get("id") || "-")}</td>
+                  </tr>
+                  <tr>
+                    <td>Tanggal</td>
+                    <td>: {formatTanggal(pembayaran.created_at)}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <div className="relative z-10 kop-surat">
-            <div className="flex items-center justify-between">
-              <div className="w-24 flex-shrink-0"></div>
+          <div className="kwitansi-body">
+            <table className="kwitansi-table">
+              <tbody>
+                <tr>
+                  <td className="label">Telah Terima Dari</td>
+                  <td className="colon">:</td>
+                  <td className="value">{pembayaran.nama_lengkap || "-"}</td>
+                </tr>
+                <tr>
+                  <td className="label">Email</td>
+                  <td className="colon">:</td>
+                  <td className="value">{pembayaran.email || "-"}</td>
+                </tr>
+                <tr>
+                  <td className="label">Uang Sejumlah</td>
+                  <td className="colon">:</td>
+                  <td className="value terbilang">{terbilang}</td>
+                </tr>
+                <tr>
+                  <td className="label">Untuk Pembayaran</td>
+                  <td className="colon">:</td>
+                  <td className="value">
+                    Pendaftaran Santri Baru Tahun Ajaran 2026/2027
+                  </td>
+                </tr>
+                <tr>
+                  <td className="label">Metode Pembayaran</td>
+                  <td className="colon">:</td>
+                  <td className="value">{pembayaran.metode_pembayaran || "Transfer Bank"}</td>
+                </tr>
+                <tr>
+                  <td className="label">Status</td>
+                  <td className="colon">:</td>
+                  <td className="value">{getStatusLabel(pembayaran.status_pembayaran)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-              <div className="text-center flex-1 leading-tight">
-                <h1 className="nama-pondok">
-                  {kopSurat.nama}
-                </h1>
+          <div className="kwitansi-amount">
+            <span className="amount-label">JUMLAH</span>
+            <span className="amount-value">{formatRupiah(pembayaran.nominal)}</span>
+          </div>
 
-                <p className="arabic-name">
-                  {kopSurat.arab}
-                </p>
-
-                <p className="yayasan">
-                  {`"${kopSurat.yayasan}"`}
-                </p>
-
-                <p className="sk-kemenkumham mt-1">
-                  {kopSurat.sk}
-                </p>
-
-                <p className="sekretariat1">
-                  {kopSurat.alamat}
-                </p>
-              </div>
-
-              <div className="w-24 flex-shrink-0"></div>
+          <div className="kwitansi-footer">
+            <div className="kwitansi-note">
+              <p>Catatan:</p>
+              <p>Kwitansi ini merupakan bukti pembayaran yang sah.</p>
+            </div>
+            <div className="kwitansi-sign">
+              <p>Mengetahui,</p>
+              <p className="sign-space">Bendahara</p>
+              <p className="sign-name">( ____________________ )</p>
             </div>
           </div>
         </div>
-
-        <div className="text-center mb-4">
-          <h2 className="font-bold text-lg">
-            BUKTI PEMBAYARAN PENDAFTARAN SANTRI BARU
-          </h2>
-          <p className="font-semibold text-base text-gray-800">
-            Tahun Ajaran 2026/2027
-          </p>
-        </div>
-
-        {/* Rincian Pembayaran */}
-        <div className="mb-6">
-          <h3 className="font-bold text-base mb-3 pb-2">
-            RINCIAN PEMBAYARAN
-          </h3>
-          <table className="space-y-2 ">
-            <tbody className="text-sm">
-              <tr>
-                <td className="font-semibold w-1/4">Nama Lengkap</td>
-                <td className="pl-2">: {pembayaran.nama_lengkap || "-"}</td>
-              </tr>
-              <tr>
-                <td className="font-semibold">Jenis Kelamin</td>
-                <td className="pl-2">: {pembayaran.jenis_kelamin || "-"}</td>
-              </tr>
-              <tr>
-                <td className="font-semibold">Email</td>
-                <td className="pl-2">: {pembayaran.email || "-"}</td>
-              </tr>
-              <tr>
-                <td className="font-semibold">Metode Pembayaran</td>
-                <td className="pl-2">: {pembayaran.metode_pembayaran || "Transfer Bank"}</td>
-              </tr>
-              <tr>
-                <td className="font-semibold">Status</td>
-                <td className="pl-2">: {pembayaran.status_pembayaran || "-"}</td>
-              </tr>
-              <tr>
-                <td className="font-semibold">Waktu Pembayaran</td>
-                <td className="pl-2">: {formatTanggal(pembayaran.created_at)}</td>
-              </tr>
-              <tr>
-                <td className="font-semibold">Nominal</td>
-                <td className="pl-2">: {pembayaran.nominal || "500.000"}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
       </div>
     </div>
   );

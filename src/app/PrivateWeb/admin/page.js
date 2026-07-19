@@ -116,7 +116,7 @@ export default function AdminDashboard() {
         
         let errorMessage = err.message;
         if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
-          errorMessage = 'Server backend tidak dapat dihubungi. Pastikan server backend sedang berjalan pada port 5000.';
+          errorMessage = 'Server backend tidak dapat dihubungi. Pastikan server backend sedang berjalan pada port 5002.';
         } else if (err.message.includes('NetworkError') || err.message.includes('network request failed')) {
           errorMessage = 'Terjadi kesalahan jaringan. Periksa koneksi Anda.';
         }
