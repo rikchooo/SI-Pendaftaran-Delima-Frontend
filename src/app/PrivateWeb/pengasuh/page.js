@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { API_URL } from "@/lib/config";
 import { apiFetch } from "@/lib/api";
+import { getAuthToken, getPrivateSession } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import PrivateHeader from "@/components/PrivateHeader";
 import {
@@ -26,14 +26,13 @@ export default function PengasuhDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const session = localStorage.getItem("private_session");
-        if (!session) {
+        if (!getAuthToken()) {
           router.replace("/PrivateWeb/login");
           return;
         }
 
-        const parsed = JSON.parse(session);
-        if (parsed.role !== "pengasuh") {
+        const parsed = getPrivateSession();
+        if (!parsed || parsed.role !== "pengasuh") {
           router.replace("/PrivateWeb/login");
           return;
         }

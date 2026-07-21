@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { API_URL } from "@/lib/config";
+import { useRouter } from 'next/navigation';
 import { apiFetch } from "@/lib/api";
+import { getAuthToken } from "@/lib/auth";
 
 const initialFormData = {
   namaLengkap: '',
@@ -33,6 +34,7 @@ const initialFormData = {
 const SANTRI_FORM_STORAGE_PREFIX = 'santri_form_data_';
 
 export default function PendaftaranSantri() {
+  const router = useRouter();
   const [formData, setFormData] = useState(initialFormData);
 
   // State untuk user email, dropdown, berkas, dan status submit
@@ -50,27 +52,35 @@ export default function PendaftaranSantri() {
   // Ambil email user dari localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      if (!getAuthToken()) {
+        router.replace('/PublicWeb/login');
+        return;
+      }
+
       const userData = localStorage.getItem('user');
-      if (userData) {
-        const user = JSON.parse(userData);
-        const email = user.email || '';
-        const savedData = email ? localStorage.getItem(`${SANTRI_FORM_STORAGE_PREFIX}${email}`) : null;
+      if (!userData) {
+        router.replace('/PublicWeb/login');
+        return;
+      }
 
-        setUserEmail(email);
+      const user = JSON.parse(userData);
+      const email = user.email || '';
+      const savedData = email ? localStorage.getItem(`${SANTRI_FORM_STORAGE_PREFIX}${email}`) : null;
 
-        if (savedData) {
-          try {
-            const parsedData = JSON.parse(savedData);
-            setFormData({ ...initialFormData, ...(parsedData.formData || {}) });
-            setSavedBerkas(parsedData.berkas || {});
-          } catch (error) {
-            console.error('Gagal membaca data santri tersimpan:', error);
-          }
+      setUserEmail(email);
+
+      if (savedData) {
+        try {
+          const parsedData = JSON.parse(savedData);
+          setFormData({ ...initialFormData, ...(parsedData.formData || {}) });
+          setSavedBerkas(parsedData.berkas || {});
+        } catch (error) {
+          console.error('Gagal membaca data santri tersimpan:', error);
         }
       }
       setHasLoadedSavedData(true);
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     if (!hasLoadedSavedData || !userEmail || typeof window === 'undefined') return;

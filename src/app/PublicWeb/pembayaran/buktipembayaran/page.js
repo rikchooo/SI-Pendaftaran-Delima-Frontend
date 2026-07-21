@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { API_URL } from "@/lib/config";
 import { apiFetch } from "@/lib/api";
+import { getAuthToken } from "@/lib/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import "@/styles/globals.css";
 export default function LaporanPage() {
@@ -16,6 +16,11 @@ export default function LaporanPage() {
   // Fetch data pembayaran berdasarkan id_pendaftaran
   useEffect(() => {
     const fetchPembayaran = async () => {
+      if (!getAuthToken()) {
+        router.replace("/PublicWeb/login");
+        return;
+      }
+
       const id = searchParams.get("id");
       if (!id) {
         setLoading(false);
@@ -39,7 +44,7 @@ export default function LaporanPage() {
     };
 
     fetchPembayaran();
-  }, [searchParams]);
+  }, [searchParams, router]);
 
   if (error) return <div className="p-6 text-red-600">Error: {error}</div>;
   if (loading) return <div className="p-6">Memuat data pembayaran...</div>;

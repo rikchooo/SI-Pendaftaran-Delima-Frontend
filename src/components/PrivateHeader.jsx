@@ -5,19 +5,11 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { HiMenuAlt3, HiX, HiLogout } from 'react-icons/hi';
+import { clearAuthSession, getPrivateSession } from '@/lib/auth';
 
 export default function PrivateHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [user, setUser] = useState(() => {
-    if (typeof window === 'undefined') return null;
-    try {
-      const stored = localStorage.getItem("private_session");
-      return stored ? JSON.parse(stored) : null;
-    } catch (err) {
-      console.error("Session parse error:", err);
-      return null;
-    }
-  });
+  const [user, setUser] = useState(() => getPrivateSession());
 
   const router = useRouter();
 
@@ -28,9 +20,7 @@ export default function PrivateHeader() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("private_session");
-    localStorage.removeItem("private_user");
+    clearAuthSession({ mode: 'private' });
     setUser(null);
     setIsMenuOpen(false);
     router.push("/PrivateWeb/login");

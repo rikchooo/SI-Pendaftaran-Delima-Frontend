@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { API_URL } from "@/lib/config";
 import { apiFetch } from "@/lib/api";
+import { getAuthToken, getPrivateSession } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import '@/styles/globals.css';
 import PrivateHeader from "@/components/PrivateHeader";
@@ -21,14 +21,13 @@ export default function PengujiDashboard() {
     // Cek otentikasi dan role
     const fetchData = async () => {
       try {
-        const session = localStorage.getItem("private_session");
-        if (!session) {
+        if (!getAuthToken()) {
           router.replace("/PrivateWeb/login");
           return;
         }
 
-        const parsed = JSON.parse(session);
-        if (parsed.role !== "penguji") {
+        const parsed = getPrivateSession();
+        if (!parsed || parsed.role !== "penguji") {
           router.replace("/PrivateWeb/login");
           return;
         }

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { API_URL } from "@/lib/config";
 import { apiFetch } from "@/lib/api";
+import { getAuthToken, getPrivateSession } from "@/lib/auth";
 import { useRouter, useParams } from "next/navigation";
 import PrivateHeader from "@/components/PrivateHeader";
 
@@ -20,15 +20,14 @@ export default function SantriDetail() {
     // Fungsi untuk mengambil data santri berdasarkan ID dari URL
     const fetchData = async () => {
       try {
-        const session = localStorage.getItem("private_session");
-        if (!session) {
+        if (!getAuthToken()) {
           router.replace("/PrivateWeb/login");
           return;
         }
 
         // Cek role user, hanya admin yang boleh mengakses halaman ini
-        const parsed = JSON.parse(session);
-        if (parsed.role !== "admin") {
+        const parsed = getPrivateSession();
+        if (!parsed || parsed.role !== "admin") {
           router.replace("/PrivateWeb/login");
           return;
         }

@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { API_URL } from "@/lib/config";
 import { apiFetch } from "@/lib/api";
+import { clearAuthSession, getAuthToken } from "@/lib/auth";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { HiCheckCircle, HiClock, HiExclamation, HiLogout, HiDocumentText, HiCurrencyDollar, HiChevronDown, HiPencil } from 'react-icons/hi';
@@ -47,7 +47,8 @@ export default function ProfilPage() {
   const [fetchError, setFetchError] = useState(null);
 
   useEffect(() => {
-    if (!user) {
+    if (!user || !getAuthToken()) {
+      clearAuthSession({ mode: 'public' });
       router.push('/PublicWeb/login');
       return;
     }
@@ -104,11 +105,7 @@ export default function ProfilPage() {
     if (user?.email) {
       localStorage.removeItem(`payment_data_${user.email}`);
     }
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('user');
-    localStorage.removeItem('registration_status');
-    localStorage.removeItem('payment_status');
-    window.dispatchEvent(new Event('logout'));
+    clearAuthSession({ mode: 'public' });
     router.push('/');
   };
 

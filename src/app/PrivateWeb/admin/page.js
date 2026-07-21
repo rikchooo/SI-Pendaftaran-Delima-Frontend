@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { API_URL } from "@/lib/config";
 import { apiFetch } from "@/lib/api";
+import { getAuthToken, getPrivateSession } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import PrivateHeader from "@/components/PrivateHeader";
 import { HiUsers, HiClock, HiCheckCircle, HiXCircle, HiSearch, HiPrinter, HiChevronDown, HiTrendingUp, HiExclamation, HiEye, HiCheck, HiX, HiSave } from "react-icons/hi";
@@ -38,14 +38,13 @@ export default function AdminDashboard() {
       try {
         let parsed;
         try {
-          const session = localStorage.getItem("private_session");
-          if (!session) {
+          if (!getAuthToken()) {
             router.replace("/PrivateWeb/login");
             return;
           }
 
-          parsed = JSON.parse(session);
-          if (parsed.role !== "admin") {
+          parsed = getPrivateSession();
+          if (!parsed || parsed.role !== "admin") {
             router.replace("/PrivateWeb/login");
             return;
           }

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { API_URL } from "@/lib/config";
 import { apiFetch } from "@/lib/api";
+import { getAuthToken, getPrivateSession } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import "@/styles/globals.css";
@@ -26,7 +26,12 @@ export default function LaporanPage() {
     // Fungsi untuk mengambil data santri dari backend
     const fetchData = async () => {
       try {
-        const session = JSON.parse(localStorage.getItem("private_session"));
+        if (!getAuthToken()) {
+          router.replace("/PrivateWeb/login");
+          return;
+        }
+
+        const session = getPrivateSession();
         if (!session || session.role !== "admin") {
           router.replace("/PrivateWeb/login");
           return;

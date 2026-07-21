@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { API_URL } from "@/lib/config";
+import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
+import { getAuthToken } from "@/lib/auth";
 import {
   HiStatusOnline,
   HiCheck,
@@ -21,6 +22,7 @@ import {
 
 export default function PembayaranPage() {
   // State untuk bukti pembayaran, status pembayaran, error, dan email user
+  const router = useRouter();
   const [buktiPembayaran, setBuktiPembayaran] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("pending");
@@ -30,43 +32,51 @@ export default function PembayaranPage() {
   // Ambil email user dari localStorage dan fetch status pembayaran terbaru dari backend
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const userData = localStorage.getItem("user");
-      if (userData) {
-        const user = JSON.parse(userData);
-        const email = user.email || "";
-        setUserEmail(email);
-
-        const fetchPaymentStatus = async () => {
-          try {
-            const response = await apiFetch(`/api/pendaftaran/status/${encodeURIComponent(email)}`);
-            if (response.ok) {
-              const data = await response.json();
-              const backendStatus = data.payment_status || "";
-              const confirmedStatuses = ["confirmed", "lunas", "success"];
-              const isConfirmed = confirmedStatuses.includes(backendStatus);
-              const hasSubmittedProof =
-                backendStatus === "submitted" ||
-                localStorage.getItem("payment_status") === "submitted";
-
-              if (isConfirmed) {
-                setPaymentStatus("success");
-                localStorage.setItem("payment_status", backendStatus);
-              } else if (hasSubmittedProof) {
-                setPaymentStatus("success");
-              } else {
-                setPaymentStatus("pending");
-                localStorage.removeItem("payment_status");
-              }
-            }
-          } catch (error) {
-            console.error("Failed to fetch payment status:", error);
-          }
-        };
-
-        fetchPaymentStatus();
+      if (!getAuthToken()) {
+        router.replace("/PublicWeb/login");
+        return;
       }
+
+      const userData = localStorage.getItem("user");
+      if (!userData) {
+        router.replace("/PublicWeb/login");
+        return;
+      }
+
+      const user = JSON.parse(userData);
+      const email = user.email || "";
+      setUserEmail(email);
+
+      const fetchPaymentStatus = async () => {
+        try {
+          const response = await apiFetch(`/api/pendaftaran/status/${encodeURIComponent(email)}`);
+          if (response.ok) {
+            const data = await response.json();
+            const backendStatus = data.payment_status || "";
+            const confirmedStatuses = ["confirmed", "lunas", "success"];
+            const isConfirmed = confirmedStatuses.includes(backendStatus);
+            const hasSubmittedProof =
+              backendStatus === "submitted" ||
+              localStorage.getItem("payment_status") === "submitted";
+
+            if (isConfirmed) {
+              setPaymentStatus("success");
+              localStorage.setItem("payment_status", backendStatus);
+            } else if (hasSubmittedProof) {
+              setPaymentStatus("success");
+            } else {
+              setPaymentStatus("pending");
+              localStorage.removeItem("payment_status");
+            }
+          }
+        } catch (error) {
+          console.error("Failed to fetch payment status:", error);
+        }
+      };
+
+      fetchPaymentStatus();
     }
-  }, []);
+  }, [router]);
 
   // State rekening dan kode bayar (hardcoded untuk contoh)
   const rekeningInfo = {

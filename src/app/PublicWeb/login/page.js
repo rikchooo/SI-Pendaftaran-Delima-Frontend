@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { API_URL } from "@/lib/config";
 import { apiFetch } from "@/lib/api";
+import { setAuthSession } from "@/lib/auth";
 import "@/styles/globals.css";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -46,8 +46,13 @@ export default function LoginPage() {
         return;
       }
 
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('user', JSON.stringify(data.user));
+      if (!data.token) {
+        setError('Login gagal: token tidak diterima dari server');
+        setLoading(false);
+        return;
+      }
+
+      setAuthSession({ token: data.token, user: data.user, mode: 'public' });
 
       alert('Login berhasil!');
       router.push('/');
