@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
+import Image from 'next/image';
 import { API_URL } from "@/lib/config";
 import { apiFetch } from "@/lib/api";
-import '@/styles/globals.css';
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { HiEye, HiEyeOff, HiUserGroup, HiPencilAlt, HiUserCircle, HiChevronDown, HiMail, HiLockClosed, HiArrowRight } from "react-icons/hi";
+import "@/styles/globals.css";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Mail, Eye, EyeOff, ArrowRight, Users, Pen, UserCircle, ChevronDown } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -20,9 +20,9 @@ export default function LoginPage() {
 
   // Daftar role yang tersedia
   const roles = [
-    { key: "admin", label: "Panitia", icon: HiUserGroup },
-    { key: "penguji", label: "Penguji", icon: HiPencilAlt },
-    { key: "pengasuh", label: "Pengasuh", icon: HiUserCircle },
+    { key: "admin", label: "Panitia", icon: Users },
+    { key: "penguji", label: "Penguji", icon: Pen },
+    { key: "pengasuh", label: "Pengasuh", icon: UserCircle },
   ];
 
   // Fungsi untuk mendapatkan teks yang ditampilkan pada dropdown berdasarkan role yang dipilih
@@ -83,104 +83,121 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left Side - Green Background */}
-      <div className="hidden lg:flex lg:w-1/2 bg-green-700 flex-col items-center justify-center p-12 text-white">
-        <div className="max-w-md text-center">
-          {/* Logo Container */}
-          <div className="mb-8 flex justify-center">
-            <div className="w-40 h-40 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="min-h-screen flex flex-col md:flex-row bg-white font-sans antialiased">
+      {/* Left Side - Desktop */}
+      <div className="hidden md:flex md:w-[45%] lg:w-[40%] bg-gradient-to-b from-[#1B7A42] to-[#137333] flex-col items-center justify-center p-12 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.08),transparent_50%)] pointer-events-none" />
+
+        <div className="flex flex-col items-center text-center z-10 max-w-sm">
+          <div className="relative w-48 h-48 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl mb-8 transition-transform duration-500 hover:scale-105">
+            <div className="w-36 h-36 rounded-full bg-white flex items-center justify-center p-3 shadow-lg">
               <Image
                 src="/images/IllustratorLoading.png"
-                alt="Logo Pondok"
+                alt="Logo Pondok Pesantren Delima Tanjung Rejo"
                 width={120}
                 height={120}
-                priority
                 className="object-contain"
+                priority
               />
             </div>
           </div>
-          
-          {/* Title */}
-          <h1 className="text-3xl font-bold mb-4 leading-tight">
+
+          <h2 className="text-2xl lg:text-3xl font-bold leading-tight tracking-tight text-white mb-4">
             Pendaftaran Santri Baru<br />
-            Pondok Pesantren Delima<br />
-            Tanjung Rejo
-          </h1>
-          
-          {/* Description */}
-          <p className="text-green-100 text-sm leading-relaxed">
+            Pondok Pesantren Delima Tanjung Rejo
+          </h2>
+
+          <p className="text-green-100/80 text-xs lg:text-sm leading-relaxed font-light">
             Mengantarkan manusia unggul dengan mengedepankan keluhuran akhlak, cerdas berilmu, dan bijak beramal.
           </p>
         </div>
       </div>
 
-      {/* Right Side - White Background */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
-        <div className="w-full max-w-md">
-          {/* Header */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+      {/* Right Side */}
+      <div className="flex-1 flex flex-col justify-between px-6 py-8 md:p-12 lg:p-16 bg-white overflow-y-auto">
+        
+        {/* Mobile Header */}
+        <div className="flex flex-col items-center text-center md:hidden bg-gradient-to-b from-[#1B7A42] to-[#137333] -mt-8 mx-[-24px] pt-10 pb-8 rounded-b-full mb-4">
+          <div className="relative w-40 h-40 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl mb-4 transition-transform duration-500 hover:scale-105">
+            <div className="w-32 h-32 rounded-full bg-white flex items-center justify-center p-3 shadow-lg">
+              <Image
+                src="/images/IllustratorLoading.png"
+                alt="Logo Ponpes Delima Tanjung Rejo"
+                width={100}
+                height={100}
+                className="object-contain"
+                priority
+              />
+            </div>
+          </div>
+          <h2 className="text-xl font-bold leading-tight tracking-tight text-white mb-1">
+            Masuk ke Akun Private
+          </h2>
+        </div>
+
+        <div className="hidden md:block" />
+
+        <div className="w-full max-w-[440px] mx-auto my-auto">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight mb-2">
               Masuk ke Akun Private
-            </h2>
-            <p className="text-gray-500 text-sm">
-              Silakan masukkan email, kata sandi, pilih role Anda untuk masuk ke sistem.
+            </h1>
+            <p className="text-gray-500 text-sm leading-relaxed">
+              Silakan masukkan email, kata sandi, dan pilih role Anda untuk masuk ke sistem.
             </p>
           </div>
 
-          {/* Error Message */}
           {error && (
-            <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">
-              {error}
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-start gap-3 animate-fade-in">
+              <svg className="w-5 h-5 mt-0.5 flex-shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="font-medium">{error}</span>
             </div>
           )}
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email Input */}
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Email Aktif
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                Email Sesuai Role
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <HiMail className="h-5 w-5 text-gray-400" />
-                </div>
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                  <Mail className="w-5 h-5" />
+                </span>
                 <input
                   type="email"
+                  placeholder="Masukkan Email Sesuai Role"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Masukkan Email Aktif Anda"
-                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
+                  className="w-full pl-11 pr-4 py-3 bg-[#F9F9F9] border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#137333]/20 focus:border-[#137333] focus:bg-white text-sm text-gray-800 transition-all duration-200"
                 />
               </div>
             </div>
 
             {/* Password Input */}
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
                 Kata Sandi
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <HiLockClosed className="h-5 w-5 text-gray-400" />
-                </div>
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Password Sesuai Role"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Min. 8 karakter"
-                  className="w-full pl-11 pr-12 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
+                  className="w-full px-4 py-3 pr-12 bg-[#F9F9F9] border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#137333]/20 focus:border-[#137333] focus:bg-white text-sm text-gray-800 transition-all duration-200"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   {showPassword ? (
-                    <HiEyeOff className="w-5 h-5" />
+                    <EyeOff className="w-5 h-5" />
                   ) : (
-                    <HiEye className="w-5 h-5" />
+                    <Eye className="w-5 h-5" />
                   )}
                 </button>
               </div>
@@ -188,28 +205,24 @@ export default function LoginPage() {
 
             {/* Role Dropdown */}
             <div className="relative">
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
                 Role
               </label>
               <button
                 type="button"
                 onClick={() => setShowRole(!showRole)}
-                className={`w-full px-4 py-3 border rounded-xl flex justify-between items-center transition-all ${
+                className={`w-full px-4 py-3 border rounded-xl flex justify-between items-center transition-all duration-200 text-sm ${
                   role
-                    ? "border-gray-300 bg-white hover:border-green-500"
-                    : "border-gray-200 bg-gray-50 hover:border-green-400"
+                    ? "border-gray-200 bg-white hover:border-[#137333] text-gray-800"
+                    : "border-gray-200 bg-[#F9F9F9] hover:border-[#137333] text-gray-500"
                 }`}
               >
-                <span
-                  className={`${role ? "text-gray-900" : "text-gray-500"}`}
-                >
-                  {getRoleDisplayText()}
-                </span>
-                <HiChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${showRole ? 'rotate-180' : ''}`} />
+                <span>{getRoleDisplayText()}</span>
+                <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${showRole ? 'rotate-180' : ''}`} />
               </button>
 
               {showRole && (
-                <div className="absolute z-10 mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                <div className="absolute z-20 mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden animate-fade-in">
                   {roles.map((r) => {
                     const IconComponent = r.icon;
                     return (
@@ -219,9 +232,9 @@ export default function LoginPage() {
                           setRole(r.key);
                           setShowRole(false);
                         }}
-                        className={`px-4 py-3 cursor-pointer hover:bg-green-50 flex items-center gap-3 transition-colors ${
+                        className={`px-4 py-3 cursor-pointer hover:bg-green-50 flex items-center gap-3 transition-colors text-sm ${
                           role === r.key
-                            ? "bg-green-100 font-medium text-green-800"
+                            ? "bg-[#137333]/10 font-semibold text-[#137333]"
                             : "text-gray-700"
                         }`}
                       >
@@ -238,19 +251,26 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 bg-green-700 text-white rounded-xl font-semibold hover:bg-green-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-green-700/20"
+              className="w-full bg-[#137333] hover:bg-[#0f5c29] text-white py-3.5 px-4 rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-2 group shadow-md shadow-[#137333]/10"
             >
-              {loading ? (
-                "Loading..."
-              ) : (
-                <>
-                  Masuk
-                  <HiArrowRight className="w-5 h-5" />
-                </>
-              )}
+              <span>{loading ? 'Memproses...' : 'Masuk'}</span>
+              {!loading && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
             </button>
           </form>
+
+          <div className="text-center text-sm mt-8">
+            <span className="text-gray-500">Belum punya akun? </span>
+            <button
+              type="button"
+              onClick={() => router.push('/PublicWeb/register')}
+              className="font-bold text-[#137333] hover:text-[#0f5c29] hover:underline transition-colors ml-1"
+            >
+              Daftar
+            </button>
+          </div>
         </div>
+        
+        <div className="hidden md:block" />
       </div>
     </div>
   );
