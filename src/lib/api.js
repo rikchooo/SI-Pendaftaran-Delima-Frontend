@@ -1,11 +1,30 @@
 import { API_URL } from './config';
 import { getAuthToken, clearAuthSession } from './auth';
 
+async function fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    return response;
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new Error('Permintaan timeout. Periksa koneksi internet atau coba lagi.');
+    }
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function apiFetch(path, options = {}) {
   const url = `${API_URL}${path}`;
   const token = getAuthToken();
 
-  const response = await fetch(url, {
+  const response = await fetchWithTimeout(url, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
