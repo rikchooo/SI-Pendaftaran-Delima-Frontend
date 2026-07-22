@@ -41,7 +41,11 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || 'Login gagal');
+        let message = data.error || 'Login gagal';
+        if (res.status === 403 && message.includes('halaman private')) {
+          message = message + ' Gunakan ' + (document.baseURI || window.location.origin) + 'PrivateWeb/login';
+        }
+        setError(message);
         setLoading(false);
         return;
       }
